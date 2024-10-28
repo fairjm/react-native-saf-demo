@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "package": "com.blackzwei.filesystemtest"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +31,26 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-dev-launcher",
+        {
+          "launchMode": "most-recent"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "savePhotosPermission": "The app needs access to your photos to save images."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "The app needs access to your photos to save images.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
