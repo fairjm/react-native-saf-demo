@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   Button,
@@ -17,6 +17,8 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] =
     useState<ImagePicker.ImagePickerAsset | null>(null);
+
+  const permissionDirectoryUri = useRef<string | null>(null);
 
   const pickImage = async () => {
     try {
@@ -43,20 +45,23 @@ export default function Index() {
       return;
     }
     try {
-      // use SAF no file permission needed but need to select a folder to save
-      const permissions =
-        await StorageAccessFramework.requestDirectoryPermissionsAsync();
+      if (permissionDirectoryUri.current === null) {
+        // use SAF no file permission needed but need to select a folder to save
+        const permissions =
+          await StorageAccessFramework.requestDirectoryPermissionsAsync();
 
-      if (!permissions.granted) {
-        alert("failed to grant permission");
-        return;
+        if (!permissions.granted) {
+          alert("failed to grant permission");
+          return;
+        }
+        permissionDirectoryUri.current = permissions.directoryUri;
       }
 
       const filename = selectedImage.uri.split("/").pop() || "image.jpg";
 
       // use permission directory uri
       const destinationUri = await StorageAccessFramework.createFileAsync(
-        permissions.directoryUri,
+        permissionDirectoryUri.current,
         filename,
         "image/jpeg"
       );
